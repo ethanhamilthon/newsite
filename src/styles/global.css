@@ -412,6 +412,12 @@ a:hover > .arrow {
   }
 }
 
+@media (min-width: 900px) {
+  .videos {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .video {
   display: block;
 }

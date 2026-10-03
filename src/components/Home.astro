@@ -72,8 +72,19 @@ const latestPosts = posts.slice(0, 3);
       </div>
     </a>
 
+    <!-- Working on -->
+    <a href={LINKS.jin} target="_blank" rel="noopener" class="tile span-2">
+      <div class="tile-head">
+        <span>{t('working.label')}</span>
+        <span class="arrow">↗</span>
+      </div>
+      <div class="spacer"></div>
+      <h2 class="title-xl">jin</h2>
+      <p class="small-caps" style="margin:10px 0 0;line-height:1.6">{t('working.jin')}</p>
+    </a>
+
     <!-- YouTube -->
-    <section class="tile span-2">
+    <section class="tile span-4">
       <div class="tile-head">
         <span>{t('youtube.latest')}</span>
         <a href={LINKS.youtube} target="_blank" rel="noopener" class="arrow" aria-label={t('youtube.all')}>↗</a>
@@ -98,7 +109,7 @@ const latestPosts = posts.slice(0, 3);
     </section>
 
     <!-- Socials -->
-    <section class="tile row-2">
+    <section class="tile">
       <div class="tile-head">
         <span>{t('social.label')}</span>
         <span class="dots">⋮</span>
@@ -106,35 +117,39 @@ const latestPosts = posts.slice(0, 3);
       <SocialLinks lang={lang} />
     </section>
 
-    <!-- Blog -->
-    <section class="tile light span-3">
-      <div class="tile-head">
-        <span>{t('blog.label')}</span>
-        <a href={localePath(lang, '/blog/')} class="arrow" aria-label={t('blog.all')}>↗</a>
-      </div>
-      {
-        latestPosts.length ? (
-          <ul class="posts">
-            {latestPosts.map((p) => (
-              <li>
-                <a href={localePath(lang, `/blog/${postSlug(p)}/`)}>
-                  <span class="pt">{p.data.title}</span>
-                  <span class="pd">{formatDate(p.data.date, lang)}</span>
-                  <span class="px">{p.data.description}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="small-caps">{t('blog.empty')}</p>
-        )
-      }
-      <div class="spacer"></div>
-      <div class="row-end">
-        <span class="title-xl">{t('blog.all')}</span>
-        <span class="sub">{posts.length} / {lang.toUpperCase()}</span>
-      </div>
-    </section>
+    <!-- Blog: hidden until the first post exists -->
+    {
+      latestPosts.length > 0 && (
+        <section class="tile light span-4">
+          <div class="tile-head">
+            <span>{t('blog.label')}</span>
+            <a href={localePath(lang, '/blog/')} class="arrow" aria-label={t('blog.all')}>↗</a>
+          </div>
+          {
+            latestPosts.length ? (
+              <ul class="posts">
+                {latestPosts.map((p) => (
+                  <li>
+                    <a href={localePath(lang, `/blog/${postSlug(p)}/`)}>
+                      <span class="pt">{p.data.title}</span>
+                      <span class="pd">{formatDate(p.data.date, lang)}</span>
+                      <span class="px">{p.data.description}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="small-caps">{t('blog.empty')}</p>
+            )
+          }
+          <div class="spacer"></div>
+          <div class="row-end">
+            <span class="title-xl">{t('blog.all')}</span>
+            <span class="sub">{posts.length} / {lang.toUpperCase()}</span>
+          </div>
+        </section>
+      )
+    }
   </main>
 </BaseLayout>
 
@@ -147,12 +162,12 @@ const latestPosts = posts.slice(0, 3);
     .home {
       grid-auto-flow: dense;
     }
-    .span-3 {
-      grid-column: span 3;
+    .span-4 {
+      grid-column: span 4;
     }
   }
   @media (min-width: 640px) and (max-width: 899px) {
-    .span-3 {
+    .span-4 {
       grid-column: span 2;
     }
   }

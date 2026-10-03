@@ -23,6 +23,7 @@ export const LINKS = {
   instagram: `https://instagram.com/${SOCIAL.instagram}`,
   tiktok: `https://www.tiktok.com/@${SOCIAL.tiktok}`,
   youtube: `https://www.youtube.com/@${SOCIAL.youtube}`,
+  jin: 'https://github.com/ethanhamilthon/jin',
 };
 
 /** WhatsApp link with a prefilled message. */
