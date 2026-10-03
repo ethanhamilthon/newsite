@@ -1,0 +1,19 @@
+# Rebuild the site once a day so the latest YouTube videos show up.
+# Needs repository secret NETLIFY_BUILD_HOOK (Netlify: Site configuration > Build & deploy > Build hooks).
+name: Daily rebuild
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # 08:00 Almaty
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify build hook
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "NETLIFY_BUILD_HOOK is not set"; exit 1; fi
+          curl -fsS -X POST -d '{}' "$HOOK"

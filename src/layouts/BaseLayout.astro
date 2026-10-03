@@ -1,0 +1,131 @@
+---
+import '../styles/global.css';
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
+import { SITE, STATS } from '../config';
+import { DEFAULT_LANG, HTML_LANG, LANGS, localePath, useT, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** Path of this page in every language. Default: same path with a language prefix. */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Restore the saved language choice on this page (home pages only). */
+  restoreLang?: boolean;
+}
+
+const { lang, restoreLang = false } = Astro.props;
+const t = useT(lang);
+const title = Astro.props.title ?? t('meta.title');
+const description = Astro.props.description ?? t('meta.description');
+
+// Path without language prefix, e.g. "/blog/".
+const parts = Astro.url.pathname.split('/');
+const barePath = lang === DEFAULT_LANG ? Astro.url.pathname : '/' + parts.slice(2).join('/');
+
+const alternates = Object.fromEntries(
+  LANGS.map((l) => [l, Astro.props.alternates?.[l] ?? localePath(l, barePath)]),
+) as Record<Lang, string>;
+
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImage = new URL('/og.jpg', SITE.url).href;
+
+const stats = [
+  ['stats.tiktok', STATS.tiktok],
+  ['stats.instagram', STATS.instagram],
+  ['stats.youtube', STATS.youtube],
+  ['stats.videos', STATS.videos],
+  ['stats.students', STATS.students],
+] as const;
+---
+
+<!doctype html>
+<html lang={HTML_LANG[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1c1c1e" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={HTML_LANG[l]} href={new URL(alternates[l], SITE.url).href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(alternates[DEFAULT_LANG], SITE.url).href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline define:vars={{ current: lang, alternates, restoreLang, langs: LANGS }}>
+      (function () {
+        var KEY = 'lang';
+        var q = new URLSearchParams(location.search).get('lang');
+        var target = null;
+        if (q && langs.indexOf(q) !== -1) {
+          try { localStorage.setItem(KEY, q); } catch (e) {}
+          if (q !== current) target = alternates[q];
+        } else if (restoreLang) {
+          var saved = null;
+          try { saved = localStorage.getItem(KEY); } catch (e) {}
+          if (saved && saved !== current && langs.indexOf(saved) !== -1) target = alternates[saved];
+        }
+        if (target && target !== location.pathname) location.replace(target + location.hash);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="frame">
+      <header class="topbar">
+        <a href={localePath(lang, '/')} class="logo" aria-label={t('nav.home')}>
+          {Array.from({ length: 9 }).map(() => <span />)}
+        </a>
+        <span class="divider d1"></span>
+        <div class="stats">
+          {
+            stats.map(([k, v]) => (
+              <div class="stat">
+                <span class="k">{t(k)}</span>
+                <span class="v">{v}</span>
+              </div>
+            ))
+          }
+        </div>
+        <div class="right">
+          <nav class="langs" aria-label="Language">
+            {
+              LANGS.map((l) => (
+                <a href={alternates[l]} hreflang={HTML_LANG[l]} aria-current={l === lang ? 'true' : 'false'} data-lang={l}>
+                  {l.toUpperCase()}
+                </a>
+              ))
+            }
+          </nav>
+          <span class="divider"></span>
+          <a href={localePath(lang, '/')} class="me">
+            <Image src={avatar} alt="Yerdana" width={60} height={60} />
+            <span class="who">
+              Yerdana
+              <small>{t('about.role')}</small>
+            </span>
+          </a>
+        </div>
+      </header>
+
+      <slot />
+
+      <footer class="footer">
+        <span>© {new Date().getFullYear()} Yerdana</span>
+        <span>yerdana.com</span>
+      </footer>
+    </div>
+    <script is:inline>
+      document.querySelectorAll('.langs a[data-lang]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          try { localStorage.setItem('lang', a.dataset.lang); } catch (e) {}
+        });
+      });
+    </script>
+  </body>
+</html>

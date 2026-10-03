@@ -1,0 +1,32 @@
+---
+import { LINKS, SOCIAL } from '../config';
+import { useT, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useT(Astro.props.lang);
+
+const items = [
+  { icon: 'whatsapp', label: t('social.whatsapp'), href: LINKS.whatsapp, handle: `+${SOCIAL.whatsapp}` },
+  { icon: 'telegram', label: t('social.telegram'), href: LINKS.telegram, handle: `@${SOCIAL.telegram}` },
+  { icon: 'telegram', label: t('social.telegramChannel'), href: LINKS.telegramChannel, handle: `@${SOCIAL.telegramChannel}` },
+  { icon: 'youtube', label: 'YouTube', href: LINKS.youtube, handle: `@${SOCIAL.youtube}` },
+  { icon: 'instagram', label: 'Instagram', href: LINKS.instagram, handle: `@${SOCIAL.instagram}` },
+  { icon: 'tiktok', label: 'TikTok', href: LINKS.tiktok, handle: `@${SOCIAL.tiktok}` },
+] as const;
+---
+
+<nav class="socials" aria-label={t('social.label')}>
+  {
+    items.map((i) => (
+      <a href={i.href} target="_blank" rel="noopener">
+        <Icon name={i.icon} />
+        <span>{i.label}</span>
+        <span class="h">{i.handle}</span>
+      </a>
+    ))
+  }
+</nav>

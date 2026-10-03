@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
+import { LINKS, STATS } from '../config';
+import { formatDate, localePath, useT, type Lang } from '../i18n/ui';
+import { formatPrice, getCourses, getPosts, postSlug } from '../lib/content';
+import { getLatestVideos } from '../lib/youtube';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialLinks from './SocialLinks.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+
+const [courses, posts, videos] = await Promise.all([getCourses(), getPosts(lang), getLatestVideos(6)]);
+const course = courses[0];
+const latestPosts = posts.slice(0, 3);
+---
+
+<BaseLayout lang={lang} restoreLang>
+  <main class="grid home">
+    <!-- About -->
+    <section class="tile span-2">
+      <div class="tile-head">
+        <span>{t('about.label')}</span>
+        <span class="dots">⋮</span>
+      </div>
+      <div class="about" style="margin-top:16px">
+        <Image src={avatar} alt="Yerdana" width={400} height={400} class="photo" loading="eager" />
+        <div style="display:flex;flex-direction:column">
+          <h1 class="title-xl">Yerdana</h1>
+          <div class="sub muted" style="margin-top:6px">{t('about.role')}</div>
+          <div class="rule"></div>
+          <p>{t('about.text')}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course -->
+    {
+      course && (
+        <a href={`/courses/${course.id}/`} class="tile accent row-2 course-tile">
+          <svg class="decor" viewBox="0 0 200 140" fill="none" stroke="rgba(255,255,255,.45)" stroke-width=".7">
+            <circle cx="150" cy="10" r="110" />
+            <line x1="150" y1="10" x2="40" y2="10" />
+            <line x1="150" y1="10" x2="95" y2="105" />
+            <line x1="150" y1="10" x2="150" y2="120" />
+          </svg>
+          <div class="tile-head">
+            <span>{t('course.label')}</span>
+            <span class="arrow">↗</span>
+          </div>
+          <div class="spacer" />
+          <h2 class="title-xl">Google Flow</h2>
+          <p class="small-caps" style="margin:10px 0 0;opacity:.85;line-height:1.6">{course.data.card}</p>
+          {t('course.kzOnly') && <span class="tag">{t('course.kzOnly')}</span>}
+          <div class="row-end" style="margin-top:22px">
+            <span class="big">{formatPrice(course.data.price)}</span>
+            <span class="sub">/ {course.data.currency}</span>
+          </div>
+          <div class="small-caps" style="margin-top:14px;opacity:.85">
+            {course.data.program.length} · {lang === 'en' ? 'lessons' : lang === 'ru' ? 'уроков' : 'сабақ'} &nbsp;→ {t('course.cta')}
+          </div>
+        </a>
+      )
+    }
+
+    <!-- Students stat -->
+    <a href={course ? `/courses/${course.id}/` : localePath(lang, '/')} class="tile">
+      <div class="tile-head">
+        <span>{t('stats.students')}</span>
+        <span class="dots">⋮</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="row-end">
+        <span class="big">{STATS.students}</span>
+        <span class="sub">/ 1000</span>
+      </div>
+      <div class="progress"><span style={`width:${Math.min(100, (parseInt(STATS.students) / 1000) * 100)}%`}></span></div>
+    </a>
+
+    <!-- YouTube -->
+    <section class="tile span-2">
+      <div class="tile-head">
+        <span>{t('youtube.latest')}</span>
+        <a href={LINKS.youtube} target="_blank" rel="noopener" class="arrow" aria-label={t('youtube.all')}>↗</a>
+      </div>
+      <div class="row-end" style="margin:14px 0 4px">
+        <span class="big">{STATS.youtube}</span>
+        <span class="sub">/ {t('stats.youtube')}</span>
+      </div>
+      <div class="rule"></div>
+      {
+        videos.length ? (
+          <div class="videos">
+            {videos.map((v) => (
+              <a class="video" href={v.url} target="_blank" rel="noopener">
+                <div class="thumb">
+                  <img src={v.thumb} alt="" loading="lazy" width="480" height="360" />
+                </div>
+                <div class="vt">{v.title}</div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="muted small-caps">{t('youtube.empty')}</p>
+        )
+      }
+    </section>
+
+    <!-- Socials -->
+    <section class="tile row-2">
+      <div class="tile-head">
+        <span>{t('social.label')}</span>
+        <span class="dots">⋮</span>
+      </div>
+      <SocialLinks lang={lang} />
+    </section>
+
+    <!-- Blog -->
+    <section class="tile light span-3">
+      <div class="tile-head">
+        <span>{t('blog.label')}</span>
+        <a href={localePath(lang, '/blog/')} class="arrow" aria-label={t('blog.all')}>↗</a>
+      </div>
+      {
+        latestPosts.length ? (
+          <ul class="posts">
+            {latestPosts.map((p) => (
+              <li>
+                <a href={localePath(lang, `/blog/${postSlug(p)}/`)}>
+                  <span class="pt">{p.data.title}</span>
+                  <span class="pd">{formatDate(p.data.date, lang)}</span>
+                  <span class="px">{p.data.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="small-caps">{t('blog.empty')}</p>
+        )
+      }
+      <div class="spacer"></div>
+      <div class="row-end">
+        <span class="title-xl">{t('blog.all')}</span>
+        <span class="sub">{posts.length} / {lang.toUpperCase()}</span>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .course-tile {
+    min-height: 420px;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .home {
+      grid-auto-flow: dense;
+    }
+    .span-3 {
+      grid-column: span 3;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 899px) {
+    .span-3 {
+      grid-column: span 2;
+    }
+  }
+</style>

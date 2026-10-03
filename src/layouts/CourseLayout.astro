@@ -1,0 +1,80 @@
+---
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/700.css';
+import '@fontsource/manrope/800.css';
+import { SITE } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+---
+
+<!doctype html>
+<html lang="kk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050505" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/og.jpg', SITE.url).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="course">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --c-bg: #050505;
+    --c-card: #121212;
+    --c-card-2: #1a1a1a;
+    --c-line: rgba(255, 255, 255, 0.07);
+    --c-text: #f3f1ec;
+    --c-muted: #9a978f;
+    --c-peach-1: #ffe3cf;
+    --c-peach-2: #f0a777;
+    --c-lime: #d8e27a;
+    --c-glow: 255, 196, 120;
+    --sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body.course {
+    margin: 0;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body.course a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  body.course img {
+    display: block;
+    max-width: 100%;
+  }
+</style>

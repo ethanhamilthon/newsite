@@ -1,0 +1,29 @@
+---
+import { render } from 'astro:content';
+import { DEFAULT_LANG, LANGS, formatDate, localePath, useT, type Lang } from '../i18n/ui';
+import type { Post } from '../lib/content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  lang: Lang;
+  post: Post;
+}
+
+const { lang, post } = Astro.props;
+const t = useT(lang);
+const { Content } = await render(post);
+
+// Posts exist in one language only. The language switch leads to the other blog lists.
+const alternates = Object.fromEntries(LANGS.map((l) => [l, localePath(l, '/blog/')])) as Record<Lang, string>;
+alternates[lang] = Astro.url.pathname;
+---
+
+<BaseLayout lang={lang} title={`${post.data.title} — Yerdana`} description={post.data.description} alternates={alternates}>
+  <article class="article">
+    <a href={localePath(lang, '/blog/')} class="back">{t('blog.back')}</a>
+    <h1>{post.data.title}</h1>
+    <div class="small-caps muted">{formatDate(post.data.date, lang)} · {lang === DEFAULT_LANG ? 'KZ' : lang.toUpperCase()}</div>
+    <div class="rule"></div>
+    <div class="prose"><Content /></div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,53 @@
+---
+import { formatDate, localePath, useT, type Lang } from '../i18n/ui';
+import { getPosts, postSlug } from '../lib/content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const posts = await getPosts(lang);
+---
+
+<BaseLayout lang={lang} title={`${t('blog.label')} — Yerdana`}>
+  <main class="grid">
+    <section class="tile accent span-2" style="min-height:180px">
+      <div class="tile-head">
+        <a href={localePath(lang, '/')} class="back" style="color:inherit">← {t('nav.home')}</a>
+        <span class="dots">⋮</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="row-end">
+        <h1 class="title-xl">{t('blog.label')}</h1>
+        <span class="sub">{posts.length} / {lang.toUpperCase()}</span>
+      </div>
+    </section>
+    <section class="tile light span-2" style="min-height:180px">
+      <div class="tile-head"><span>{t('blog.all')}</span></div>
+      <div class="spacer"></div>
+      <span class="big">{posts.length}</span>
+    </section>
+    <section class="tile" style="grid-column:1/-1">
+      {
+        posts.length ? (
+          <ul class="posts" style="margin:0">
+            {posts.map((p) => (
+              <li>
+                <a href={localePath(lang, `/blog/${postSlug(p)}/`)}>
+                  <span class="pt">{p.data.title}</span>
+                  <span class="pd">{formatDate(p.data.date, lang)}</span>
+                  <span class="px">{p.data.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="small-caps muted">{t('blog.empty')}</p>
+        )
+      }
+    </section>
+  </main>
+</BaseLayout>
