@@ -8,6 +8,9 @@ export interface Video {
   url: string;
 }
 
+// UULF + channel id (without the UC prefix) is YouTube's long-form-only uploads playlist: no Shorts.
+const LONG_FORM_PLAYLIST = `UULF${SOCIAL.youtubeChannelId.slice(2)}`;
+
 let cache: Promise<Video[]> | null = null;
 
 function decode(s: string): string {
@@ -20,7 +23,7 @@ function decode(s: string): string {
 }
 
 async function fetchVideos(): Promise<Video[]> {
-  const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${SOCIAL.youtubeChannelId}`;
+  const url = `https://www.youtube.com/feeds/videos.xml?playlist_id=${LONG_FORM_PLAYLIST}`;
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -39,7 +42,7 @@ async function fetchVideos(): Promise<Video[]> {
         id,
         title,
         published,
-        thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+        thumb: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
         url: isShort ? `https://www.youtube.com/shorts/${id}` : `https://www.youtube.com/watch?v=${id}`,
       }));
   } catch (err) {

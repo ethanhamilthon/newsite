@@ -2,7 +2,7 @@
 
 export const SITE = {
   url: 'https://yerdana.com',
-  name: 'Yerdana',
+  name: 'Yerdana Yerbol',
   handle: '@yerdana',
 };
 
@@ -32,9 +32,6 @@ export function waLink(text: string): string {
 
 // Placeholder numbers. Replace with real ones.
 export const STATS = {
-  tiktok: '48.2K',
-  instagram: '21.7K',
-  youtube: '12.4K',
   videos: '214',
-  students: '320',
+  students: '120',
 };

@@ -10,8 +10,8 @@
   --line: #2c2c31;
   --text: #e9e8e3;
   --muted: #8a8a90;
-  --accent: #56688f;
-  --accent-2: #6d80a8;
+  --accent: #a80f1e;
+  --accent-2: #c8192b;
   --light: #b3b2aa;
   --light-text: #141416;
   --radius: 2px;
@@ -167,7 +167,6 @@ img {
   height: 30px;
   border-radius: 50%;
   object-fit: cover;
-  filter: grayscale(1);
 }
 
 .me .who {
@@ -366,27 +365,14 @@ a:hover > .arrow {
 /* ---------- about tile ---------- */
 
 .about {
-  display: grid;
-  gap: 18px;
-}
-
-.about .photo {
-  aspect-ratio: 1;
-  width: 100%;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.05);
+  display: flex;
+  flex-direction: column;
 }
 
 .about p {
   margin: 0;
   color: #cfcec8;
   font-size: 13px;
-}
-
-@media (min-width: 640px) {
-  .about {
-    grid-template-columns: 180px 1fr;
-  }
 }
 
 /* ---------- course tile decor ---------- */
@@ -416,13 +402,13 @@ a:hover > .arrow {
 
 .videos {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 640px) {
   .videos {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -440,19 +426,17 @@ a:hover > .arrow {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1);
-  transition: filter 0.2s, transform 0.2s;
+  transition: transform 0.2s;
 }
 
 .video:hover img {
-  filter: none;
   transform: scale(1.03);
 }
 
 .video .vt {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.35;
-  margin-top: 6px;
+  margin-top: 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

@@ -28,11 +28,7 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
     <div class="bg-glow" aria-hidden="true"></div>
 
     <header class="nav">
-      <a href="/" class="brand">
-        <Image src={avatar} alt="" width={48} height={48} />
-        <span>Yerdana</span>
-      </a>
-      <span class="bar" aria-hidden="true"></span>
+      <a href="/" class="more">Басқа ақпараттар мында</a>
     </header>
 
     <section class="hero">
@@ -112,7 +108,7 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
       <div class="price-card">
         <p class="eyebrow">💵 Бағасы</p>
         <div class="price">{price}</div>
-        <p class="muted">Бір рет төлейсің. Толық ақпаратты жоғарыдағы видеодан көр 👆🏻</p>
+        <p class="muted">Бір рет төлейсің. Мәңгілік доступ</p>
         <a href={signup} target="_blank" rel="noopener" class="cta big">
           <Icon name="whatsapp" size={20} />
           WhatsApp арқылы жазылу
@@ -183,13 +179,14 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
   .bg-glow {
     position: absolute;
     left: 50%;
-    top: 30px;
-    width: 640px;
+    top: -100px;
+    width: 900px;
     max-width: 100vw;
-    height: 420px;
+    height: 700px;
     transform: translateX(-50%);
     z-index: -1;
-    background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(var(--c-glow), 0.28), transparent 70%);
+    /* Fades to fully transparent before the box edge, so no hard rectangle is visible. */
+    background: radial-gradient(closest-side, rgba(var(--c-glow), 0.3), transparent);
     pointer-events: none;
   }
 
@@ -198,46 +195,40 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding-top: 22px;
+    padding-top: 14px;
   }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-weight: 700;
-    font-size: 17px;
+  .more {
+    font-size: 14px;
+    color: var(--c-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(var(--c-glow), 0.5);
+    transition: color 0.15s;
   }
 
-  .brand img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .bar {
-    width: 150px;
-    height: 4px;
-    border-radius: 4px;
-    background: var(--c-lime);
-    box-shadow: 0 6px 40px 6px rgba(var(--c-glow), 0.45);
+  .more:hover {
+    color: var(--c-peach-1);
   }
 
   /* hero */
   .hero {
     text-align: center;
-    padding-top: 56px;
+    padding-top: 28px;
   }
 
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin: 0 0 18px;
-    font-size: 13px;
-    color: var(--c-muted);
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 8px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--c-peach-1);
+    border: 1px solid rgba(var(--c-glow), 0.55);
+    border-radius: 999px;
+    background: rgba(var(--c-glow), 0.12);
   }
 
   .pill span {
@@ -247,8 +238,8 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
 
   h1 {
     margin: 0 auto;
-    max-width: 880px;
-    font-size: clamp(34px, 7vw, 68px);
+    max-width: 960px;
+    font-size: clamp(40px, 8.5vw, 80px);
     line-height: 1.04;
     letter-spacing: -0.035em;
     font-weight: 700;
@@ -259,8 +250,12 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
     text-wrap: balance;
   }
 
+  /* Block, so its own wrapped lines use this line-height instead of the larger h1 strut. */
   .h-2 {
+    display: block;
     font-size: 0.72em;
+    line-height: 1.02;
+    margin-top: 15px;
   }
 
   .lead {
@@ -326,7 +321,7 @@ const [titleTop, titleBottom] = d.title.includes(':') ? d.title.split(/:\s*/, 2)
     width: auto;
     aspect-ratio: 1;
     object-fit: cover;
-    filter: grayscale(1) contrast(1.1) brightness(0.8);
+    filter: contrast(1.1) brightness(0.8);
     mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent), linear-gradient(0deg, transparent, #000 30%);
     mask-composite: intersect;
     opacity: 0.7;

@@ -32,9 +32,6 @@ const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL('/og.jpg', SITE.url).href;
 
 const stats = [
-  ['stats.tiktok', STATS.tiktok],
-  ['stats.instagram', STATS.instagram],
-  ['stats.youtube', STATS.youtube],
   ['stats.videos', STATS.videos],
   ['stats.students', STATS.students],
 ] as const;
@@ -104,7 +101,7 @@ const stats = [
           </nav>
           <span class="divider"></span>
           <a href={localePath(lang, '/')} class="me">
-            <Image src={avatar} alt="Yerdana" width={60} height={60} />
+            <Image src={avatar} alt={t('site.name')} width={60} height={60} />
             <span class="who">
               Yerdana
               <small>{t('about.role')}</small>
@@ -116,7 +113,7 @@ const stats = [
       <slot />
 
       <footer class="footer">
-        <span>© {new Date().getFullYear()} Yerdana</span>
+        <span>© {new Date().getFullYear()} {t('site.name')}</span>
         <span>yerdana.com</span>
       </footer>
     </div>
